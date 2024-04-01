@@ -83,7 +83,7 @@ namespace Proyecto_Venta_Autos.Controllers
                     _context.Update(usuario);
                     _context.SaveChanges();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception ex)
                 {
                     if (!UsuarioExists(usuario.ID))
                     {
