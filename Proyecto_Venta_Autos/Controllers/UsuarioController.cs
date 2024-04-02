@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Proyecto_Venta_Autos.Models;
 
 namespace Proyecto_Venta_Autos.Controllers
@@ -13,9 +14,10 @@ namespace Proyecto_Venta_Autos.Controllers
         }
 
         // GET: Usuario
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(_context.Usuarios.ToList());
+            var Usuarios = await _context.Usuarios.ToListAsync();
+            return View(Usuarios);
         }
 
         public IActionResult Details(int? id)

@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Venta_Autos_Models\Venta_Autos_Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>
