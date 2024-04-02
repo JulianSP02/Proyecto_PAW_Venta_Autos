@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Proyecto_Venta_Autos.Models;
 
@@ -16,18 +21,21 @@ namespace Proyecto_Venta_Autos.Controllers
         // GET: Usuario
         public async Task<IActionResult> Index()
         {
-            var Usuarios = await _context.Usuarios.ToListAsync();
-            return View(Usuarios);
+              return _context.Usuarios != null ? 
+                          View(await _context.Usuarios.ToListAsync()) :
+                          Problem("Entity set 'VentaAutosDbContext.Usuarios'  is null.");
         }
 
-        public IActionResult Details(int? id)
+        // GET: Usuario/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Usuarios == null)
             {
                 return NotFound();
             }
 
-            var usuario = _context.Usuarios.FirstOrDefault(m => m.ID == id);
+            var usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (usuario == null)
             {
                 return NotFound();
@@ -36,32 +44,37 @@ namespace Proyecto_Venta_Autos.Controllers
             return View(usuario);
         }
 
+        // GET: Usuario/Create
         public IActionResult Create()
         {
             return View();
         }
 
+        // POST: Usuario/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("ID,Nombre,Email,Contraseña,Rol")] Usuario usuario)
+        public async Task<IActionResult> Create([Bind("ID,Nombre,Email,Contraseña,Rol")] Usuario usuario)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(usuario);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(usuario);
         }
 
-        public IActionResult Edit(int? id)
+        // GET: Usuario/Edit/5
+        public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Usuarios == null)
             {
                 return NotFound();
             }
 
-            var usuario = _context.Usuarios.Find(id);
+            var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario == null)
             {
                 return NotFound();
@@ -69,9 +82,12 @@ namespace Proyecto_Venta_Autos.Controllers
             return View(usuario);
         }
 
+        // POST: Usuario/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("ID,Nombre,Email,Contraseña,Rol")] Usuario usuario)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Nombre,Email,Contraseña,Rol")] Usuario usuario)
         {
             if (id != usuario.ID)
             {
@@ -83,9 +99,9 @@ namespace Proyecto_Venta_Autos.Controllers
                 try
                 {
                     _context.Update(usuario);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
-                catch (Exception ex)
+                catch (DbUpdateConcurrencyException)
                 {
                     if (!UsuarioExists(usuario.ID))
                     {
@@ -101,14 +117,16 @@ namespace Proyecto_Venta_Autos.Controllers
             return View(usuario);
         }
 
-        public IActionResult Delete(int? id)
+        // GET: Usuario/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Usuarios == null)
             {
                 return NotFound();
             }
 
-            var usuario = _context.Usuarios.FirstOrDefault(m => m.ID == id);
+            var usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (usuario == null)
             {
                 return NotFound();
@@ -117,20 +135,28 @@ namespace Proyecto_Venta_Autos.Controllers
             return View(usuario);
         }
 
+        // POST: Usuario/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var usuario = _context.Usuarios.Find(id);
-            _context.Usuarios.Remove(usuario);
-            _context.SaveChanges();
+            if (_context.Usuarios == null)
+            {
+                return Problem("Entity set 'VentaAutosDbContext.Usuarios'  is null.");
+            }
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario != null)
+            {
+                _context.Usuarios.Remove(usuario);
+            }
+            
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool UsuarioExists(int id)
         {
-            return _context.Usuarios.Any(e => e.ID == id);
+          return (_context.Usuarios?.Any(e => e.ID == id)).GetValueOrDefault();
         }
-
     }
 }

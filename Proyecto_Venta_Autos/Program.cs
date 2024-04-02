@@ -1,7 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using Proyecto_Venta_Autos.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<VentaAutosDbContext>(op =>
+op.UseSqlServer(builder.Configuration.GetConnectionString("Auto")));
 
 var app = builder.Build();
 
