@@ -28,7 +28,7 @@ namespace Proyecto_Venta_Autos.Controllers
         {
             if (ModelState.IsValid)
             {
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/Login", usuario);
+                HttpResponseMessage response = await _httpClient.GetAsync($"api/Login/Login?email={usuario.Email}&contraseña={usuario.Contraseña}");
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction("Index", "Home");
@@ -46,3 +46,4 @@ namespace Proyecto_Venta_Autos.Controllers
         }
     }
 }
+
