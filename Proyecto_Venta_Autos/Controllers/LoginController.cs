@@ -1,49 +1,98 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Proyecto_Venta_Autos.Models;
-using System.Net.Http;
-using System.Threading.Tasks;
+using Proyecto_Venta_Autos.Logica;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Web.Security;
 
-namespace Proyecto_Venta_Autos.Controllers
+namespace ProyectoTest.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly HttpClient _httpClient;
-
-        public LoginController()
-        {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("https://localhost:7138/");
-            _httpClient.DefaultRequestHeaders.Accept.Clear();
-            _httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-        }
-
-        [HttpGet]
-        public IActionResult Index()
+        // GET: Login
+        public ActionResult Index()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(Usuario usuario)
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult Index(string NCorreo, string NContrasena)
         {
-            if (ModelState.IsValid)
+
+            Usuario oUsuario = new Usuario();
+
+            oUsuario = UsuarioLogica.Instancia.Obtener(NCorreo, NContrasena);
+
+            if (oUsuario == null)
             {
-                HttpResponseMessage response = await _httpClient.GetAsync($"api/Login/Login?email={usuario.Email}&contraseña={usuario.Contraseña}");
-                if (response.IsSuccessStatusCode)
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Credenciales inválidas");
-                    return View(usuario);
-                }
+                ViewBag.Error = "Correo o contraseña no correcta";
+                return View();
+            }
+
+            FormsAuthentication.SetAuthCookie(oUsuario.Correo, false);
+            Session["Usuario"] = oUsuario;
+
+            if (oUsuario.EsAdministrador == true)
+            {
+                return RedirectToAction("Index", "Home");
             }
             else
             {
-                return View(usuario);
+                return RedirectToAction("Index", "Tienda");
+            }
+
+
+        }
+
+        // GET: Login
+        public ActionResult Registrarse()
+        {
+            return View(new Usuario() { Nombres = "", Apellidos = "", Correo = "", Contrasena = "", ConfirmarContrasena = "" });
+        }
+
+        [HttpPost]
+        public ActionResult Registrarse(string NNombres, string NApellidos, string NCorreo, string NContrasena, string NConfirmarContrasena)
+        {
+            Usuario oUsuario = new Usuario()
+            {
+                Nombres = NNombres,
+                Apellidos = NApellidos,
+                Correo = NCorreo,
+                Contrasena = NContrasena,
+                ConfirmarContrasena = NConfirmarContrasena,
+                EsAdministrador = false
+            };
+
+            if (NContrasena != NConfirmarContrasena)
+            {
+                ViewBag.Error = "Las contraseñas no coinciden";
+                return View(oUsuario);
+            }
+            else
+            {
+
+
+                int idusuario_respuesta = UsuarioLogica.Instancia.Registrar(oUsuario);
+
+                if (idusuario_respuesta == 0)
+                {
+                    ViewBag.Error = "Error al registrar";
+                    return View();
+
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Login");
+                }
             }
         }
-    }
-}
 
+    }
+
+}

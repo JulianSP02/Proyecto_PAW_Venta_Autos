@@ -2,24 +2,18 @@
 
 namespace Proyecto_Venta_Autos.Models
 {
-    public class Auto
+    public class Producto
     {
-        [Key]
-        public int Id { get; set; }
-
-        [Required]
-        public string Marca { get; set; }
-
-        [Required]
-        public string Modelo { get; set; }
-
-        [Required]
-        public int Anio { get; set; }
-
-        [Required]
+        public int IdProducto { get; set; }
+        public string Nombre { get; set; }
+        public string Descripcion { get; set; }
+        public Marca oMarca { get; set; }
+        public Categoria oCategoria { get; set; }
         public decimal Precio { get; set; }
-
-        [Required]
-        public bool Disponible { get; set; }
+        public int Stock { get; set; }
+        public string RutaImagen { get; set; }
+        public bool Activo { get; set; }
+        public string base64 { get; set; }
+        public string extension { get; set; }
     }
 }

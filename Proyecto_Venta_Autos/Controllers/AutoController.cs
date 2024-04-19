@@ -21,21 +21,26 @@ namespace Proyecto_Venta_Autos.Controllers
         // GET: Auto
         public async Task<IActionResult> Index()
         {
-              return _context.Autos != null ? 
-                          View(await _context.Autos.ToListAsync()) :
-                          Problem("Entity set 'VentaAutosDbContext.Autos'  is null.");
+            var autos = await _context.Autos.ToListAsync();
+            if (autos != null && autos.Any())
+            {
+                return View(autos);
+            }
+            else
+            {
+                return Problem("No se encontraron autos en la base de datos.");
+            }
         }
 
         // GET: Auto/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Autos == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var auto = await _context.Autos
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var auto = await _context.Autos.FirstOrDefaultAsync(m => m.Id == id);
             if (auto == null)
             {
                 return NotFound();
@@ -69,7 +74,7 @@ namespace Proyecto_Venta_Autos.Controllers
         // GET: Auto/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Autos == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -79,6 +84,7 @@ namespace Proyecto_Venta_Autos.Controllers
             {
                 return NotFound();
             }
+
             return View(auto);
         }
 
@@ -120,13 +126,12 @@ namespace Proyecto_Venta_Autos.Controllers
         // GET: Auto/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Autos == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var auto = await _context.Autos
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var auto = await _context.Autos.FirstOrDefaultAsync(m => m.Id == id);
             if (auto == null)
             {
                 return NotFound();
@@ -140,23 +145,19 @@ namespace Proyecto_Venta_Autos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Autos == null)
-            {
-                return Problem("Entity set 'VentaAutosDbContext.Autos'  is null.");
-            }
             var auto = await _context.Autos.FindAsync(id);
             if (auto != null)
             {
                 _context.Autos.Remove(auto);
+                await _context.SaveChangesAsync();
             }
-            
-            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
         private bool AutoExists(int id)
         {
-          return (_context.Autos?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Autos?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
