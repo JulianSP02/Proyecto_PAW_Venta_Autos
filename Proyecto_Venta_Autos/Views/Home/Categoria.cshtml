@@ -192,8 +192,7 @@
             }
 
             jQuery.ajax({
-                //url: '@Url.Action("GuardarCategoria", "Home")',
-                url: "Home/GuardarCategoria",
+                url: '@Url.Action("GuardarCategoria", "Home")',
                 type: "POST",
                 data: JSON.stringify(request),
                 dataType: "json",
