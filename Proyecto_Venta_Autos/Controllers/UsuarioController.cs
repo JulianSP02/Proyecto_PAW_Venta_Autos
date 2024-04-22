@@ -35,7 +35,7 @@ namespace Proyecto_Venta_Autos.Controllers
             }
 
             var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.IdUsuario == id);
             if (usuario == null)
             {
                 return NotFound();
@@ -89,7 +89,7 @@ namespace Proyecto_Venta_Autos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Nombre,Email,Contraseña,Rol")] Usuario usuario)
         {
-            if (id != usuario.ID)
+            if (id != usuario.IdUsuario)
             {
                 return NotFound();
             }
@@ -103,7 +103,7 @@ namespace Proyecto_Venta_Autos.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UsuarioExists(usuario.ID))
+                    if (!UsuarioExists(usuario.IdUsuario))
                     {
                         return NotFound();
                     }
@@ -126,7 +126,7 @@ namespace Proyecto_Venta_Autos.Controllers
             }
 
             var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.IdUsuario == id);
             if (usuario == null)
             {
                 return NotFound();
@@ -156,7 +156,7 @@ namespace Proyecto_Venta_Autos.Controllers
 
         private bool UsuarioExists(int id)
         {
-          return (_context.Usuarios?.Any(e => e.ID == id)).GetValueOrDefault();
+          return (_context.Usuarios?.Any(e => e.IdUsuario == id)).GetValueOrDefault();
         }
     }
 }

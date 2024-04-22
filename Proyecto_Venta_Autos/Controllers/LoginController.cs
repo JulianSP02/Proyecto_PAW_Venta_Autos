@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecto_Venta_Autos.Models;
 using Proyecto_Venta_Autos.Logica;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Security;
+using System.Security.Claims;
 
 namespace ProyectoTest.Controllers
 {
@@ -22,11 +20,9 @@ namespace ProyectoTest.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult Index(string NCorreo, string NContrasena)
+        public async Task<ActionResult> Index(string NCorreo, string NContrasena)
         {
-
             Usuario oUsuario = new Usuario();
-
             oUsuario = UsuarioLogica.Instancia.Obtener(NCorreo, NContrasena);
 
             if (oUsuario == null)
@@ -35,10 +31,22 @@ namespace ProyectoTest.Controllers
                 return View();
             }
 
-            FormsAuthentication.SetAuthCookie(oUsuario.Correo, false);
-            Session["Usuario"] = oUsuario;
+            // Crear las claims del usuario
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, oUsuario.Correo),
+                new Claim(ClaimTypes.Role, oUsuario.EsAdministrador ? "Administrador" : "Usuario")
+            };
 
-            if (oUsuario.EsAdministrador == true)
+            // Crear la identidad y el principal
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+            // Autenticar al usuario
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+
+            // Redirigir según el rol del usuario
+            if (oUsuario.EsAdministrador)
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -46,8 +54,6 @@ namespace ProyectoTest.Controllers
             {
                 return RedirectToAction("Index", "Tienda");
             }
-
-
         }
 
         // GET: Login
@@ -76,15 +82,11 @@ namespace ProyectoTest.Controllers
             }
             else
             {
-
-
                 int idusuario_respuesta = UsuarioLogica.Instancia.Registrar(oUsuario);
-
                 if (idusuario_respuesta == 0)
                 {
                     ViewBag.Error = "Error al registrar";
                     return View();
-
                 }
                 else
                 {
@@ -92,7 +94,5 @@ namespace ProyectoTest.Controllers
                 }
             }
         }
-
     }
-
 }
