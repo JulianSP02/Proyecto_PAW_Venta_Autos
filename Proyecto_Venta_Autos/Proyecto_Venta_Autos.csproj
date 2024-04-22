@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\**" />
+    <Content Remove="Services\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <None Remove="Services\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.SessionState.SessionStateModule" Version="2.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.28">
       <PrivateAssets>all</PrivateAssets>
@@ -22,12 +29,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Venta_Autos_Models\Venta_Autos_Models.csproj" />
+    <ProjectReference Include="..\Venta_Autos_Models" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\Scripts\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>

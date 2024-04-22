@@ -1,4 +1,4 @@
-﻿
+﻿@model ProyectoTest.Models.Usuario
 @{
     Layout = null;
 }
@@ -32,7 +32,8 @@
                                             <label for="inputPassword">Contraseña</label>
                                         </div>
                                         <div class="form-floating mb-3">
-                                            @{if (ViewBag.Error != null)
+                                            @{
+                                                if (ViewBag.Error != null)
                                                 {
                                                     <div class="alert alert-danger" role="alert">
                                                         @ViewBag.Error
@@ -49,9 +50,9 @@
                                             </div>
                                         </div>
                                     </form>
-                                    
+
                                 </div>
-                                
+
                                 <div class="card-footer text-center py-3">
                                     <div class="small"><a id="publicidad_cuenta" href="@Url.Action("Registrarse","Login")">Necesitas una cuenta? Registrate!</a></div>
                                 </div>
@@ -79,7 +80,8 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     <script>
-        
+
     </script>
 </body>
 </html>
+
