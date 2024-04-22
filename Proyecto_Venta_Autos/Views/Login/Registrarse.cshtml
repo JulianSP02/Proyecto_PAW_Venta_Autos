@@ -67,7 +67,8 @@
                                             </div>
                                         </div>
                                         <div class="form-floating">
-                                            @{if (ViewBag.Error != null)
+                                            @{
+                                                if (ViewBag.Error != null)
                                                 {
                                                     <div class="alert alert-danger" role="alert">
                                                         @ViewBag.Error
@@ -83,7 +84,6 @@
                                     </form>
                                 </div>
                                 <div class="card-footer text-center py-3">
-
                                 </div>
                             </div>
                         </div>
@@ -106,6 +106,5 @@
             </footer>
         </div>
     </div>
-
 </body>
 </html>

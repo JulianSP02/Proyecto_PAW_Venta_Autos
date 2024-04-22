@@ -1,10 +1,4 @@
-﻿@model Proyecto_Venta_Autos.Models.Usuario
-@{
-    Layout = null;
-}
-
-<!DOCTYPE html>
-
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -13,15 +7,6 @@
     <link href="@Url.Content("~/lib/bootstrap/dist/css/Site.css")" rel="stylesheet" />
     <link href="@Url.Content("~/css/jquery.dataTables.min.css")" rel="stylesheet" />
     <link href="@Url.Content("~/css/responsive.dataTables.min.css")" rel="stylesheet" />
-
-    <script src="@Url.Content("~/Scripts/jquery-{version}.js")"></script>
-    <script src="@Url.Content("~/Scripts/jquery.validate*")"></script>
-    <script src="@Url.Content("~/Scripts/modernizr-*")"></script>
-    <script src="@Url.Content("~/Scripts/bootstrap.bundle.min.js")"></script>
-    <script src="@Url.Content("~/Scripts/SweetAlert/sweetalert.min.js")"></script>
-    <script src="@Url.Content("~/Scripts/DataTables/jquery.dataTables.min.js")"></script>
-    <script src="@Url.Content("~/Scripts/DataTables/dataTables.responsive.min.js")"></script>
-    <script src="@Url.Content("~/Scripts/loadingoverlay.min.js")"></script>
 </head>
 <body class="bg-dark">
     <div id="layoutAuthentication">
@@ -34,23 +19,20 @@
                                 <div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3></div>
                                 <div class="card-body">
                                     <form action="@Url.Content("~/Login/Index")" method="post">
-                                        @Html.AntiForgeryToken()
                                         <div class="form-floating mb-3">
-                                            <input class="form-control" id="inputEmail" name="NCorreo" type="email" placeholder="name@example.com" @*value="pruebas@gmail.com"*@ value="admin@example.com" />
+                                            <input class="form-control" id="inputEmail" name="NCorreo" type="email" placeholder="name@example.com" value="admin@example.com" />
                                             <label for="inputEmail">Correo</label>
                                         </div>
                                         <div class="form-floating mb-3">
-                                            <input class="form-control" id="inputPassword" name="NContrasena" type="password" placeholder="Contraseña" @*value="12345"*@ autocomplete="off" value="admin123" />
+                                            <input class="form-control" id="inputPassword" name="NContrasena" type="password" placeholder="Contraseña" autocomplete="off" value="admin123" />
                                             <label for="inputPassword">Contraseña</label>
                                         </div>
                                         <div class="form-floating mb-3">
-                                            @{
-                                                if (ViewBag.Error != null)
-                                                {
-                                                    <div class="alert alert-danger" role="alert">
-                                                        @ViewBag.Error
-                                                    </div>
-                                                }
+                                            @if (ViewBag.Error != null)
+                                            {
+                                                <div class="alert alert-danger" role="alert">
+                                                    @ViewBag.Error
+                                                </div>
                                             }
                                         </div>
                                         <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
@@ -62,9 +44,7 @@
                                             </div>
                                         </div>
                                     </form>
-
                                 </div>
-
                                 <div class="card-footer text-center py-3">
                                     <div class="small"><a id="publicidad_cuenta" href="@Url.Action("Registrarse","Login")">Necesitas una cuenta? Registrate!</a></div>
                                 </div>
@@ -89,9 +69,14 @@
             </footer>
         </div>
     </div>
-    <script>
 
-    </script>
+    <script src="@Url.Content("~/Scripts/jquery-{version}.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate*")"></script>
+    <script src="@Url.Content("~/Scripts/modernizr-*")"></script>
+    <script src="@Url.Content("~/Scripts/bootstrap.bundle.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/SweetAlert/sweetalert.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/DataTables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/DataTables/dataTables.responsive.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/loadingoverlay.min.js")"></script>
 </body>
 </html>
-

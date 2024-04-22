@@ -6,8 +6,9 @@ using Proyecto_Venta_Autos.Models;
 using Proyecto_Venta_Autos.Logica;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
-namespace ProyectoTest.Controllers
+namespace Proyecto_Venta_Autos.Controllers
 {
     public class LoginController : Controller
     {
@@ -22,8 +23,7 @@ namespace ProyectoTest.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Index(string NCorreo, string NContrasena)
         {
-            Usuario oUsuario = new Usuario();
-            oUsuario = UsuarioLogica.Instancia.Obtener(NCorreo, NContrasena);
+            Usuario oUsuario = UsuarioLogica.Instancia.Obtener(NCorreo, NContrasena);
 
             if (oUsuario == null)
             {
@@ -35,64 +35,46 @@ namespace ProyectoTest.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, oUsuario.Correo),
-                new Claim(ClaimTypes.Role, oUsuario.EsAdministrador ? "Administrador" : "Usuario")
+                new Claim(ClaimTypes.Email, oUsuario.Correo),
+                // Puedes agregar más claims según lo necesites
             };
 
-            // Crear la identidad y el principal
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+            // Crear el identity del usuario
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-            // Autenticar al usuario
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+            // Crear los claims principal
+            var principal = new ClaimsPrincipal(identity);
 
-            // Redirigir según el rol del usuario
-            if (oUsuario.EsAdministrador)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            else
-            {
-                return RedirectToAction("Index", "Tienda");
-            }
+            // Iniciar sesión de forma asíncrona
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            return RedirectToAction("Index", oUsuario.EsAdministrador ? "Home" : "Tienda");
         }
 
         // GET: Login
         public ActionResult Registrarse()
         {
-            return View(new Usuario() { Nombres = "", Apellidos = "", Correo = "", Contrasena = "", ConfirmarContrasena = "" });
+            return View(new Usuario());
         }
 
         [HttpPost]
-        public ActionResult Registrarse(string NNombres, string NApellidos, string NCorreo, string NContrasena, string NConfirmarContrasena)
+        public ActionResult Registrarse(Usuario oUsuario)
         {
-            Usuario oUsuario = new Usuario()
-            {
-                Nombres = NNombres,
-                Apellidos = NApellidos,
-                Correo = NCorreo,
-                Contrasena = NContrasena,
-                ConfirmarContrasena = NConfirmarContrasena,
-                EsAdministrador = false
-            };
-
-            if (NContrasena != NConfirmarContrasena)
+            if (oUsuario.Contrasena != oUsuario.ConfirmarContrasena)
             {
                 ViewBag.Error = "Las contraseñas no coinciden";
                 return View(oUsuario);
             }
-            else
+
+            int idusuario_respuesta = UsuarioLogica.Instancia.Registrar(oUsuario);
+
+            if (idusuario_respuesta == 0)
             {
-                int idusuario_respuesta = UsuarioLogica.Instancia.Registrar(oUsuario);
-                if (idusuario_respuesta == 0)
-                {
-                    ViewBag.Error = "Error al registrar";
-                    return View();
-                }
-                else
-                {
-                    return RedirectToAction("Index", "Login");
-                }
+                ViewBag.Error = "Error al registrar";
+                return View();
             }
+
+            return RedirectToAction("Index", "Login");
         }
     }
 }

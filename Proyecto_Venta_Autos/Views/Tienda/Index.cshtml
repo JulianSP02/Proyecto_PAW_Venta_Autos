@@ -1,8 +1,8 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout_Tienda.cshtml";
 }
+
 
 <div class="row mt-5">
     <div class="bg-secondary py-3">
@@ -17,7 +17,6 @@
     <div class="py-2">
         <div class="container px-2 px-lg-2 mt-5">
             <div id="catalogo-productos" class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-
             </div>
         </div>
     </div>
@@ -38,13 +37,12 @@
 
             </div>
             <div class="modal-footer">
-               
             </div>
         </div>
     </div>
 </div>
 
-@section scripts{
+@section scripts {
 
     <script>
 
@@ -60,12 +58,12 @@
                     $(".modal-body").LoadingOverlay("hide");
                     if (data.data != null) {
                         $("<div>").addClass("col-4").append(
-                            $("<button>").addClass("btn btn-outline-primary btn-categoria m-1 w-100").text("Ver Todos").attr({ "onclick":"listarProductos(0)"})
+                            $("<button>").addClass("btn btn-outline-primary btn-categoria m-1 w-100").text("Ver Todos").attr({ "onclick": "listarProductos(0)" })
                         ).appendTo(".row-categoria")
 
                         $.each(data.data, function (i, item) {
                             $("<div>").addClass("col-4").append(
-                                $("<button>").addClass("btn btn-outline-primary btn-categoria m-1 w-100").text(item.Descripcion).attr({ "onclick": "listarProductos("+ item.IdCategoria +")" })
+                                $("<button>").addClass("btn btn-outline-primary btn-categoria m-1 w-100").text(item.Descripcion).attr({ "onclick": "listarProductos(" + item.IdCategoria + ")" })
                             ).appendTo(".row-categoria")
                         });
                     }
@@ -99,7 +97,7 @@
             jQuery.ajax({
                 url: '@Url.Action("ListarProducto", "Tienda")',
                 type: "POST",
-                data: JSON.stringify({ idcategoria: _idcategoria}),
+                data: JSON.stringify({ idcategoria: _idcategoria }),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
@@ -124,11 +122,7 @@
                                     $("<div>").addClass("card-footer p-4 pt-0 border-top-0 bg-transparent").append(
                                         $("<div>").addClass("d-grid d-md-grid gap-2 d-md-block align-items-center text-center").append(
                                             $("<button>").addClass("btn btn-outline-dark mt-auto btn-detalle").text("Ver Detalle").attr({ "data-elemento": JSON.stringify(item) }),
-                                           @{
-                                               if (((Proyecto_Venta_Autos.Models.Usuario)Session["Usuario"]).EsAdministrador == false) {
-                                                    @:$("<button>").addClass("btn btn-outline-dark mt-auto btn-agregar-carrito").data("idproducto", item.IdProducto).text("Agregar al carrito")
-                                               }
-                                           }
+                                            usuarioAutenticado ? $("<button>").addClass("btn btn-outline-dark mt-auto btn-agregar-carrito").text("Agregar al carrito") : null
 
                                         )
                                     )
@@ -148,7 +142,4 @@
         }
 
     </script>
-
-
-
 }
