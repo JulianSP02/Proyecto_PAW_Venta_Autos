@@ -1,4 +1,4 @@
-﻿@model ProyectoTest.Models.Usuario
+﻿@model Proyecto_Venta_Autos.Models.Usuario
 @{
     Layout = null;
 }
@@ -9,7 +9,19 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
-    @Styles.Render("~/Content/css")
+    <link href="@Url.Content("~/lib/bootstrap/dist/css/bootstrap.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/lib/bootstrap/dist/css/Site.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/css/jquery.dataTables.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/css/responsive.dataTables.min.css")" rel="stylesheet" />
+
+    <script src="@Url.Content("~/Scripts/jquery-{version}.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate*")"></script>
+    <script src="@Url.Content("~/Scripts/modernizr-*")"></script>
+    <script src="@Url.Content("~/Scripts/bootstrap.bundle.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/SweetAlert/sweetalert.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/DataTables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/DataTables/dataTables.responsive.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/loadingoverlay.min.js")"></script>
 </head>
 <body class="bg-dark">
     <div id="layoutAuthentication">
@@ -77,8 +89,6 @@
             </footer>
         </div>
     </div>
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
     <script>
 
     </script>

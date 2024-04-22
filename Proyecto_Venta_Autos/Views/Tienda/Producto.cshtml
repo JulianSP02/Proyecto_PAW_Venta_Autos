@@ -1,4 +1,4 @@
-﻿@model ProyectoTest.Models.Producto
+﻿@model Proyecto_Venta_Autos.Models.Producto
 @{
     ViewBag.Title = "Producto";
     Layout = "~/Views/Shared/_Layout_Tienda.cshtml";
@@ -20,7 +20,7 @@
                         <i class="fas fa-undo-alt"></i> Volver
                     </a>
                     @{
-                        if (((ProyectoTest.Models.Usuario)Session["Usuario"]).EsAdministrador == false)
+                        if (((Proyecto_Venta_Autos.Models.Usuario)Session["Usuario"]).EsAdministrador == false)
                         {
                             <button class="btn btn-success btn-agregar-carrito flex-shrink-0 w-50 " type="button" data-idproducto="@Html.DisplayTextFor(model => model.IdProducto)">
                                 <i class="fas fa-cart-plus"></i> Agregar al carrito
